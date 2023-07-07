@@ -75,7 +75,7 @@ $tokenList = $manager->getAllToken();
         <div class="box">
             <h2 class="subtitle">Generate Token</h2>
 
-            <form id="token-gen" method="post" action="/">
+            <form id="token-gen" method="post" >
                 <div class="field">
                     <label class="label">TOKEN</label>
                     <div class="control">
