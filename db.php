@@ -6,6 +6,7 @@
   public $db;
 
   function __construct() {
+    //move db file path on production!!
     $this->db = new SQLite3('database.db');
   }
     public function addToken(String $token, String $expdate, String $service)
@@ -16,6 +17,13 @@
         $insertToken->bindParam(3, $service);
 
         return $insertToken->execute();
+    }
+
+    public function deleteToken(String $token) {
+      $deleteToken = $this->db->prepare("DELETE FROM tokens WHERE token is ?");
+      $deleteToken->bindParam(1, $token);
+
+      return $deleteToken->execute();
     }
 
     public function getTokenInfo(String $token) {
@@ -36,7 +44,8 @@
         $out[] = $tmp;
       }
       return $out;
-    }
+    } 
+
 }
 
 

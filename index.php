@@ -5,20 +5,18 @@ date_default_timezone_set('Asia/Jakarta');
 
 
 // ---------  CONFIG HERE ------------
+//$serverUrl = "http://192.168.0.102:8000";
 $tokenPrefix = "UNFOLLTHEM-";
 $expDayCount = 7; //day
 // -----------------------------------
 $manager = new Database();
 
+// if POST == add Token
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    
     $date = new DateTime(date('Y-m-d'));
-    $date->modify('+' . $expDayCount . ' day');
-    $timestamp = time();
-
-
-
-
-
+    $date->modify('+' . $expDayCount . ' day'); // default expiration date
+    $timestamp = time(); 
 
     $token = ($_POST['token'] == '') ? $tokenPrefix . $timestamp : $_POST['token'];
     $expiration = ($_POST['exp'] == '') ? $date->format('Y-m-d') : $_POST['exp'];
@@ -28,11 +26,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 }
 
+//if DELETE == delete Token
+if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
+    
+    if ($manager->deleteToken(substr($_SERVER['REQUEST_URI'], 9))) {
+        //header('Location: '. $serverUrl);
+        
+    } else {
+        die("Failed delete token!");
+    }
+}
+
 
 $tokenList = $manager->getAllToken();
-
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -123,7 +129,7 @@ $tokenList = $manager->getAllToken();
                             echo "<th>".$token['token']."</th>";
                             echo "<th>".$token['service']."</th>";
                             echo "<th>".$token['expire']."</th>";
-                            echo "<th>"."DELETE"."</th>";
+                            echo "<th> <button class=\"button is-primary\" onclick=\"deleteToken('".$token['token']."')\" >DELETE</button> </th>";
                             echo "<tr>"; 
                             $num++;
                            }
@@ -143,7 +149,16 @@ $tokenList = $manager->getAllToken();
 
 </body>
 <script>
-
+function deleteToken(token) {
+    fetch("/?delete="+token, {
+        method: 'DELETE'
+    }).then((res) => {
+        if (res == "Failed delete token!") {
+            alert(res)
+        }
+        window.location = '/'
+    })
+}
 </script>
 
 </html>
