@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 //if DELETE == delete Token
 if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
     
-    if ($manager->deleteToken(substr($_SERVER['REQUEST_URI'], 9))) {
+    if ($manager->deleteToken(substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], '=')+1))) {
         //header('Location: '. $serverUrl);
         
     } else {
@@ -50,6 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
 
 
 $tokenList = $manager->getAllToken();
+$uriIfUrlQueryAvailable = substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?'));
+$uriWithOutQuery = ($uriIfUrlQueryAvailable == '') ? $_SERVER['REQUEST_URI'] : $uriIfUrlQueryAvailable;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -165,13 +167,13 @@ $tokenList = $manager->getAllToken();
 </body>
 <script>
 function deleteToken(token) {
-    fetch("/?delete="+token, {
+    fetch("<?php echo($uriWithOutQuery) ?>?delete="+token, {
         method: 'DELETE'
     }).then((res) => {
         if (res == "Failed delete token!") {
             alert(res)
         }
-        window.location = '/'
+        window.location = '<?php echo($uriWithOutQuery); ?>'
     })
 }
 </script>
