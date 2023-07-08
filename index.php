@@ -1,14 +1,25 @@
 <?php
 include './db.php';
+include './config.php';
 session_start();
 date_default_timezone_set('Asia/Jakarta');
+
+$config = new Config();
 
 
 // ---------  CONFIG HERE ------------
 //$serverUrl = "http://192.168.0.102:8000";
-$tokenPrefix = "UNFOLLTHEM-";
-$expDayCount = 7; //day
+$tokenPrefix = $config->tokenPrefix;
+$expDayCount = $config->defaultExpirationDay; //day
 // -----------------------------------
+
+if (!isset($_SESSION['adminauth'])) {
+    header('Location: login.php');
+}
+if (!array_key_exists('adminauth', $_SESSION) || $_SESSION['adminauth'] == null || !$_SESSION['adminauth'] == $config->sessionAuthValue ) {
+    header('Location: login.php');
+}
+
 $manager = new Database();
 
 // if POST == add Token
@@ -63,14 +74,18 @@ $tokenList = $manager->getAllToken();
 
 <body>
     <!-- nav -->
-    <nav class="navbar" role="navigation" aria-label="main navigation">
+    <!-- <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand" style="padding: 8px;">
             <h1 class="subtitle">Admin</h1>
 
         </div>
-    </nav>
+    </nav> -->
 
     <div class="container" style="padding: 12px;">
+    <div class="box">
+        <h1 class="subtitle">Admin Page</h1>
+        <button class="button is-normal is-light" onclick="window.location = 'logout.php'">Logout</button>
+    </div>
 
         <div class="box">
             <h2 class="subtitle">Generate Token</h2>
