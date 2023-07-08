@@ -27,7 +27,7 @@
     }
 
     public function getTokenInfo(String $token) {
-      $readTokenInfo = $this->db->prepare("SELECT * FROM tables WHERE token is ?");
+      $readTokenInfo = $this->db->prepare("SELECT * FROM tokens WHERE token is ?");
       $readTokenInfo->bindParam(1, $token);
 
       $result = $readTokenInfo->execute();
