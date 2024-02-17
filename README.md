@@ -9,7 +9,7 @@ Need to give someone temporary access to your apps?
 This project will generate a token for your users.
 
 ## To do
-under active development
+ development
 
 - [x] Authentication
 - [ ] API endpoint
